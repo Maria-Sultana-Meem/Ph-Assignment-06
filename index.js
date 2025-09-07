@@ -66,6 +66,52 @@ fetch(url)
 
 };
 
+const loadAllPlant=()=>{
+const url='https://openapi.programming-hero.com/api/plants'
+fetch(url)
+.then((res)=>res.json())
+.then((data)=>{
+
+displayAllPlants(data.plants)
+
+
+})
+.catch((err)=>{
+  console.log(err);
+  
+})
+
+
+};
+
+const displayAllPlants=(plants)=>{
+  
+  plantsCardContainer.innerHTML=""
+  
+  plants.forEach((plant)=>{
+
+   plantsCardContainer.innerHTML+=`
+   
+    <div id="${plant.id}" class="border border-gray-100 rounded-lg p-4 bg-white space-y-4">
+            <div  class=" h-[200px]"}>
+            <img class="w-full h-full rounded-lg" src="${plant.image}" alt="">
+            </div>
+            <h1 onclick="loadPlantDetails(${plant.id})" class="font-bold text-xl">${plant.name}</h1>
+            <p>${plant.description.slice(0,80)}...</p>
+            <div class="flex justify-between items-center">
+              <button class="btn bg-[#DCFCE7] text-[#15803D] rounded-2xl">${plant.category}</button>
+              <h2> <span>৳</span> <span id="price">${plant.price}</span></h2>
+              
+            </div>
+              <button class="btn bg-green-700 w-full rounded-2xl text-white">Add to Cart</button>
+          </div>   
+  `
+
+   }) 
+
+
+}
+
 const displayPlantsByCategory=(plants)=>{
   
   plantsCardContainer.innerHTML=""
@@ -118,7 +164,9 @@ let addTocart =[]
    
       total=priceNum+total;
      document.getElementById('total-price').innerText="৳"+total
-    
+
+    alert(`${title} has been added to the cart`)
+   return
   };
   const showCarts=(carts)=>{
     cartContainer.innerHTML=""
@@ -133,8 +181,9 @@ let addTocart =[]
     <div onclick="handleDelete('${cart.id}')" >❌</div>
     </div>
     `
+    
   })
-
+   
    
   };
 
@@ -148,6 +197,8 @@ let addTocart =[]
   const filterdDelete=addTocart.filter((cart)=>cart.id !==deleteId)
    addTocart=filterdDelete
    showCarts(addTocart)
+
+  
 
  }
 
@@ -184,4 +235,4 @@ const displayPlantDetails=(plants)=>{
 
 
 loadCategory()
-loadPlantsByCategory(1)
+loadAllPlant()
