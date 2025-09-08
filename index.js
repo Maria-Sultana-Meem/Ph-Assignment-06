@@ -25,7 +25,8 @@ const displayCategory=(categories)=>{
   categories.forEach((category)=>{
 
      allCategory.innerHTML+=`
-       <li id="${category.id}" class=" p-2 rounded-lg  hover:text-white hover:bg-green-700  cursor-pointer">${category.category_name}</li>
+       <li id="${category.id}" class=" p-2 rounded-lg  hover:text-white border md:border-none
+        hover:bg-green-700  cursor-pointer">${category.category_name}</li>
      
      `
 
