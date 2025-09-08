@@ -25,7 +25,7 @@ const displayCategory=(categories)=>{
   categories.forEach((category)=>{
 
      allCategory.innerHTML+=`
-       <li id="${category.id}" class=" p-2 rounded-lg hover:text-white hover:bg-green-700  cursor-pointer">${category.category_name}</li>
+       <li id="${category.id}" class=" p-2 rounded-lg  hover:text-white hover:bg-green-700  cursor-pointer">${category.category_name}</li>
      
      `
 
@@ -35,11 +35,13 @@ const displayCategory=(categories)=>{
    const allLi=document.querySelectorAll('li')
    allLi.forEach((li)=>{
     li.classList.remove('bg-green-700')
+    li.classList.remove('text-white')
      
    })
    if (e.target.localName==='li') {
    
     e.target.classList.add('bg-green-700')
+    e.target.classList.add('text-white')
     
     loadPlantsByCategory(e.target.id)
 }
@@ -51,6 +53,7 @@ const displayCategory=(categories)=>{
 
 // cards..
 const loadPlantsByCategory=(plantsId)=>{
+  manageSpinner(true)
 const url = `https://openapi.programming-hero.com/api/category/${plantsId}`
 fetch(url)
 .then((res)=>res.json())
@@ -67,6 +70,7 @@ fetch(url)
 };
 
 const loadAllPlant=()=>{
+  manageSpinner(true)
 const url='https://openapi.programming-hero.com/api/plants'
 fetch(url)
 .then((res)=>res.json())
@@ -108,7 +112,7 @@ const displayAllPlants=(plants)=>{
   `
 
    }) 
-
+manageSpinner(false)
 
 }
 
@@ -136,6 +140,7 @@ const displayPlantsByCategory=(plants)=>{
   `
 
    }) 
+   manageSpinner(false)
 };
 
 let addTocart =[]
@@ -154,16 +159,25 @@ let addTocart =[]
      const price = e.target.parentNode.children[3].children[1].children[1].innerText
       const id =e.target.parentNode.id
       const priceNum=parseFloat(price)
+      
+      // ............
+     const quantityItem=addTocart.find(cart=>cart.id===id)
+    if (quantityItem) {
+      quantityItem.quantity+=1
+    }
+    else{
       addTocart.push({
-        title:title,
+       title:title,
         price:priceNum,
-         id:id
-      })
+         id:id,
+         quantity:1
 
-     showCarts(addTocart)
-   
+      })
+    };
+    
       total=priceNum+total;
      document.getElementById('total-price').innerText="৳"+total
+     showCarts(addTocart)
 
     alert(`${title} has been added to the cart`)
    return
@@ -175,10 +189,10 @@ let addTocart =[]
     cartContainer.innerHTML+=`
     <div class="rounded-lg mt-2 p-2 bg-[#F0FDF4] flex justify-between items-center">
     <div>
-    <h1>${cart.title}</h1>
-    <p>৳${cart.price}</p>
+    <h1 class="font-bold">${cart.title}</h1>
+    <p class="text-gray-500">৳${cart.price} x ${cart.quantity}</p>
     </div>
-    <div onclick="handleDelete('${cart.id}')" >❌</div>
+    <div onclick="handleDelete('${cart.id}')" ><i class="fa-solid fa-xmark text-gray-500"></i></div>
     </div>
     `
     
@@ -187,22 +201,18 @@ let addTocart =[]
    
   };
 
- const handleDelete=(deleteId)=>{
-   const itemRemove =addTocart.find((cart)=>cart.id ==deleteId)
-   if (itemRemove) {
-    total=total-itemRemove.price
-     document.getElementById('total-price').innerText="৳"+total
+  const handleDelete=(deleteId)=>{
+  const itemRemove=addTocart.find(cart=>cart.id===deleteId)
+if (itemRemove) {
+  total-=itemRemove.price
+   document.getElementById('total-price').innerText="৳"+total;
+   itemRemove.quantity-=1;
+   if(itemRemove.quantity===0){
+    addTocart=addTocart.filter(cart=>cart.id !==deleteId)
    }
-  
-  const filterdDelete=addTocart.filter((cart)=>cart.id !==deleteId)
-   addTocart=filterdDelete
-   showCarts(addTocart)
-
-  
-
- }
-
-  
+}
+showCarts(addTocart)
+  }
 
 const loadPlantDetails=(id)=>{
 const url =`https://openapi.programming-hero.com/api/plant/${id}`
@@ -228,7 +238,18 @@ const displayPlantDetails=(plants)=>{
  document.getElementById('plant_modal').showModal()
 }
 
+const manageSpinner=(spin)=>{
+if (spin==true) {
+  document.getElementById('spinner').classList.remove('hidden')
+  document.getElementById('plants-card-container').classList.add('hidden')
+}
+else{
 
+  document.getElementById('plants-card-container').classList.remove('hidden')
+    document.getElementById('spinner').classList.add('hidden')
+}
+
+}
 
 
 
