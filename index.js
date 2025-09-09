@@ -77,7 +77,7 @@ fetch(url)
 .then((res)=>res.json())
 .then((data)=>{
 
-displayAllPlants(data.plants)
+ displayAllPlants(data.plants)
 
 
 })
@@ -213,7 +213,7 @@ if (itemRemove) {
    }
 }
 showCarts(addTocart)
-  }
+  };
 
 const loadPlantDetails=(id)=>{
 const url =`https://openapi.programming-hero.com/api/plant/${id}`
